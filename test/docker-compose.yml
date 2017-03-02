@@ -1,0 +1,38 @@
+---
+version: '2'
+
+services:
+  ansible:
+    build:
+      dockerfile: test/dockerfiles/Dockerfile
+      context: ..
+    command: /tmp/run.sh
+    working_dir: /tmp
+    volumes:
+      - ../:/etc/ansible/roles/czerasz.jemalloc/:ro
+      - ../test/:/tmp/
+    depends_on:
+      - debian_8
+      - ubuntu_1604
+      - ubuntu_1610
+      - ubuntu_1704
+
+  debian_8:
+    build:
+      dockerfile: test/dockerfiles/Dockerfile.debian_8
+      context: ..
+
+  ubuntu_1604:
+    build:
+      dockerfile: test/dockerfiles/Dockerfile.ubuntu_16.04
+      context: ..
+
+  ubuntu_1610:
+    build:
+      dockerfile: test/dockerfiles/Dockerfile.ubuntu_16.10
+      context: ..
+
+  ubuntu_1704:
+    build:
+      dockerfile: test/dockerfiles/Dockerfile.ubuntu_17.04
+      context: ..

@@ -1,0 +1,84 @@
+---
+
+- name: Add hosts fingerprints localy to be able to connect via password
+  hosts: 127.0.0.1
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: Create .ssh directory
+      file:
+        path: /root/.ssh/
+        state: directory
+
+    - name: Remove the ~/.ssh/known_hosts
+      file:
+        path: ~/.ssh/known_hosts
+        state: absent
+
+    - name: Add fingerprint of the given host
+      shell: "ssh-keyscan -H {{ item }} >> ~/.ssh/known_hosts"
+      with_items:
+        - debian_8
+        - ubuntu_1604
+        - ubuntu_1610
+        - ubuntu_1704
+
+- name: Install python if it wasn't installed yet
+  hosts: all
+  gather_facts: False
+  pre_tasks:
+    - raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- name: Install bats testing framework
+  hosts: all
+  become: True
+  roles:
+    - role: czerasz.bats
+      vars:
+        version: 0.4.0
+
+- name: Install jemalloc 4.5.0
+  hosts: all
+  become: True
+  roles:
+    - role: czerasz.jemalloc
+      vars:
+        version: 4.5.0
+
+- name: Test jemalloc 4.5.0 installation
+  hosts: all
+  become: True
+  tasks:
+    - name: Copy test script
+      copy:
+        src: /tmp/check-debian.sh
+        dest: /usr/local/bin/check
+        mode: "u=x"
+
+    - name: Run the test
+      command: /usr/local/bin/check
+      environment:
+        jemalloc_version: 4.5.0
+
+- name: Install jemalloc 4.0.0 after an higher version was installed
+  hosts: all
+  become: True
+  roles:
+    - role: czerasz.jemalloc
+      vars:
+        version: 4.0.0
+
+- name: Test jemalloc 4.0.0 installation
+  hosts: all
+  become: True
+  tasks:
+    - name: Copy test script
+      copy:
+        src: /tmp/check-debian.sh
+        dest: /usr/local/bin/check
+        mode: "u=x"
+
+    - name: Run the test
+      command: /usr/local/bin/check
+      environment:
+        jemalloc_version: 4.0.0

@@ -1,0 +1,9 @@
+---
+
+- name: Shut down containers
+  hosts: all
+  gather_facts: False
+  tasks:
+    - name: Kill the first process
+      command: kill 1
+      ignore_errors: yes

@@ -1,0 +1,22 @@
+FROM ubuntu:16.04
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    echo "===> Updating TLS certificates" &&\
+    apt-get update &&\
+    apt-get install -y openssl \
+                       ca-certificates &&\
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Resource: https://docs.docker.com/engine/examples/running_ssh_service/
+RUN DEBIAN_FRONTEND=noninteractive \
+    echo "===> Install SSH daemon" &&\
+    apt-get update &&\
+    apt-get install -y openssh-server &&\
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN mkdir /var/run/sshd
+# Set root user password
+RUN echo 'root:test' | chpasswd
+RUN sed -i 's/^\#\?\s*PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]
