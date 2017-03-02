@@ -1,0 +1,39 @@
+---
+
+- name: Check if jemalloc already exists
+  stat:
+    path: /usr/local/bin/jemalloc-config
+  register: jemalloc_config_bin_file
+
+- name: Set current_jemalloc_version to 0.0.0 if jemalloc doesn't exists
+  set_fact:
+    current_jemalloc_version: "0.0.0"
+  when: not jemalloc_config_bin_file.stat.exists
+
+- name: Get current jemalloc version
+  shell: |
+    /usr/local/bin/jemalloc-config --version | sed "s/^\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/"
+  # `/usr/local/bin/jemalloc-config --version` returns 4.4.0-0-gf1f76357313e7dcad7262f17a48ff0a2e005fcdc
+  #
+  # The command returns a version string
+  # Example:  { "stdout": "4.4.0", ... }
+  register: jemalloc_system_version
+  when: jemalloc_config_bin_file.stat.exists
+
+- name: Set current_jemalloc_version fact
+  set_fact:
+    current_jemalloc_version: "{{ jemalloc_system_version.stdout }}"
+  when: jemalloc_config_bin_file.stat.exists
+
+- name: View current jemalloc version
+  debug:
+    msg: "{{ current_jemalloc_version }}"
+
+# Install jemalloc if it doesn't exist or the version doesn't match
+- block:
+    - name: Install jemalloc packages required for compiling
+      include: install-compile-tools.yml
+
+    - name: Compile and install jemalloc
+      include: install.yml
+  when: current_jemalloc_version | version_compare(version, '!=')

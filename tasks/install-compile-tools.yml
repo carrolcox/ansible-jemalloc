@@ -1,0 +1,26 @@
+---
+# file: tasks/install-compile-tools.yml
+# Top-level installer tools required for compiling jemalloc sources.
+
+- name: Install Apt jemalloc packages required for compiling
+  apt:
+    name: build-essential
+    state: installed
+    update_cache: yes
+    cache_valid_time: 3600
+  when: ansible_pkg_mgr == "apt"
+
+# Closest build-essential equivalent
+# Resource: http://unix.stackexchange.com/a/1344/30457
+- name: Install Yum jemalloc packages required for compiling
+  yum:
+    name: "{{ item }}"
+    state: installed
+    update_cache: yes
+  when: ansible_pkg_mgr == "yum"
+  with_items:
+    - make
+    - automake
+    - gcc
+    - gcc-c++
+    - kernel-devel

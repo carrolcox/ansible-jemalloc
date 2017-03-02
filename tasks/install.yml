@@ -1,0 +1,28 @@
+---
+
+- name: Download jemalloc release
+  unarchive:
+    src: "https://github.com/jemalloc/jemalloc/releases/download/{{ version }}/jemalloc-{{ version }}.tar.bz2"
+    dest: "/tmp"
+    remote_src: yes
+    mode: "u=rwx,g=rx,o="
+    creates: "/tmp/jemalloc-{{ version }}"
+
+- name: Configure build for jemalloc
+  command: "./configure"
+  args:
+    chdir: "/tmp/jemalloc-{{ version }}"
+
+- name: Build the default target for jemalloc
+  make:
+    chdir: "/tmp/jemalloc-{{ version }}"
+
+- name: Build the `install` target for jemalloc
+  make:
+    chdir: "/tmp/jemalloc-{{ version }}"
+    target: install
+
+- name: Remove obsolete files
+  file:
+    path: "/tmp/jemalloc-{{ version }}"
+    state: absent
