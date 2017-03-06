@@ -20,14 +20,14 @@ git clone https://gitlab.com/czerasz/ansible-jemalloc.git /etc/ansible/roles/cze
   roles:
     - role: czerasz.jemalloc
       vars:
-        version: 4.0.0
+        version: 4.5.0
 ```
 
 ## Role Variables
 
 | name | description | default |
 | --- | --- | --- |
-| `version` | jemalloc version | `4.0.0` |
+| `version` | jemalloc version | `4.5.0` |
 
 # Test
 
