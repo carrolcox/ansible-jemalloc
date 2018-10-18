@@ -18,7 +18,7 @@ git clone https://gitlab.com/mr.jsdive/ansible-jemalloc.git /etc/ansible/roles/a
 - name: Add jemalloc support
   hosts: all
   tasks:
-    - inclede_role:
+    - include_role:
         name: ansible-jemalloc
       vars:
         version: 5.1.0
