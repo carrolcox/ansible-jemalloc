@@ -4,7 +4,7 @@
 
 - name: Install Apt jemalloc packages required for compiling
   apt:
-    name: build-essential
+    name: ['build-essential']
     state: installed
     update_cache: yes
     cache_valid_time: 3600
@@ -14,13 +14,7 @@
 # Resource: http://unix.stackexchange.com/a/1344/30457
 - name: Install Yum jemalloc packages required for compiling
   yum:
-    name: "{{ item }}"
+    name: ['make', 'automake', 'gcc', 'gcc-c++', 'kernel-devel']
     state: installed
     update_cache: yes
   when: ansible_pkg_mgr == "yum"
-  with_items:
-    - make
-    - automake
-    - gcc
-    - gcc-c++
-    - kernel-devel

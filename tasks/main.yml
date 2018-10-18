@@ -20,14 +20,21 @@
   register: jemalloc_system_version
   when: jemalloc_config_bin_file.stat.exists
 
-- name: Set current_jemalloc_version fact
-  set_fact:
-    current_jemalloc_version: "{{ jemalloc_system_version.stdout }}"
+- name: Get current jemalloc enironment var
+  shell: |
+    echo LD_PRELOAD=`jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision`
+  register: jemalloc_env_var
   when: jemalloc_config_bin_file.stat.exists
 
-- name: View current jemalloc version
+- name: Set current_jemalloc_ facts
+  set_fact:
+    current_jemalloc_version: "{{ jemalloc_system_version.stdout }}"
+    current_jemalloc_env_var: "{{ jemalloc_env_var.stdout }}"
+  when: jemalloc_config_bin_file.stat.exists
+
+- name: View current jemalloc version and environment var
   debug:
-    msg: "{{ current_jemalloc_version }}"
+    msg: "{{ current_jemalloc_version }}, {{ current_jemalloc_env_var }}"
 
 # Install jemalloc if it doesn't exist or the version doesn't match
 - block:
@@ -36,4 +43,4 @@
 
     - name: Compile and install jemalloc
       include: install.yml
-  when: current_jemalloc_version | version_compare(version, '!=')
+  when: current_jemalloc_version is version_compare(version, '!=')

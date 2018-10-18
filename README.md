@@ -7,7 +7,7 @@ A role used to install jemalloc from source.
 Install the role with:
 
 ```
-git clone https://gitlab.com/czerasz/ansible-jemalloc.git /etc/ansible/roles/czerasz.jemalloc
+git clone https://gitlab.com/mr.jsdive/ansible-jemalloc.git /etc/ansible/roles/ansible-jemalloc
 ```
 
 ## Usage
@@ -17,17 +17,18 @@ git clone https://gitlab.com/czerasz/ansible-jemalloc.git /etc/ansible/roles/cze
 
 - name: Add jemalloc support
   hosts: all
-  roles:
-    - role: czerasz.jemalloc
+  tasks:
+    - inclede_role:
+        name: ansible-jemalloc
       vars:
-        version: 4.5.0
+        version: 5.1.0
 ```
 
 ## Role Variables
 
 | name | description | default |
 | --- | --- | --- |
-| `version` | jemalloc version | `4.5.0` |
+| `version` | jemalloc version | `5.1.0` |
 
 # Test
 
