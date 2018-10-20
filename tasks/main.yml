@@ -35,6 +35,7 @@
 - name: View current jemalloc version and environment var
   debug:
     msg: "{{ current_jemalloc_version }}, {{ current_jemalloc_env_var }}"
+  when: jemalloc_config_bin_file.stat.exists
 
 # Install jemalloc if it doesn't exist or the version doesn't match
 - block:
