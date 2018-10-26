@@ -1,0 +1,12 @@
+HTTP/1.1 400 Bad Request
+Cache-Control: no-cache
+Content-Length: 92
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json; charset=utf-8
+Strict-Transport-Security: max-age=31557600
+X-Content-Type-Options: nosniff
+X-Frame-Options: deny
+X-Xss-Protection: 1; mode=block
+Date: Thu, 25 Oct 2018 12:13:46 GMT
+X-GitHub-Request-Id: DA36:1E2C:1BB811:1FECAC:5BD1B37A
+
