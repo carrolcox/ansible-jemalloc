@@ -6,15 +6,14 @@ A role used to install jemalloc from source.
 
 Install the role with:
 
-```
+```shell
 git clone https://gitlab.com/mr.jsdive/ansible-jemalloc.git /etc/ansible/roles/ansible-jemalloc
 ```
 
 ## Usage
 
-```
+```yml
 ---
-
 - name: Add jemalloc support
   hosts: all
   tasks:
@@ -26,11 +25,11 @@ git clone https://gitlab.com/mr.jsdive/ansible-jemalloc.git /etc/ansible/roles/a
 
 ## Role Variables
 
-| name | description | default |
-| --- | --- | --- |
+| name      | description      | default |
+| --------- | ---------------- | ------- |
 | `version` | jemalloc version | `5.1.0` |
 
-# Test
+## Test
 
 Requirements:
 
@@ -38,6 +37,6 @@ Requirements:
 
 Run tests with:
 
-```
+```shell
 docker-compose -f test/docker-compose.yml up
 ```
