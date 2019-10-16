@@ -1,13 +1,19 @@
 # Ansible Jemalloc Role
 
-A role used to install jemalloc from source.
+A role used to install _jemalloc_ from source.
 
 ## Installation
 
 Install the role with:
 
 ```shell
-git clone https://gitlab.com/mr.jsdive/ansible-jemalloc.git /etc/ansible/roles/ansible-jemalloc
+git clone https://github.com/crrlcx/ansible-jemalloc.git /etc/ansible/roles/ansible-jemalloc
+```
+
+or
+
+```shell
+git clone https://gitlab.com/crrlcx/ansible-jemalloc.git /etc/ansible/roles/ansible-jemalloc
 ```
 
 ## Usage
@@ -16,18 +22,17 @@ git clone https://gitlab.com/mr.jsdive/ansible-jemalloc.git /etc/ansible/roles/a
 ---
 - name: Add jemalloc support
   hosts: all
-  tasks:
-    - include_role:
-        name: ansible-jemalloc
+  roles:
+    - role: ansible-jemalloc
       vars:
-        version: 5.1.0
+        version: 5.2.1
 ```
 
 ## Role Variables
 
 | name      | description      | default |
 | --------- | ---------------- | ------- |
-| `version` | jemalloc version | `5.1.0` |
+| `version` | jemalloc version | `5.2.1` |
 
 ## Test
 
