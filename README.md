@@ -1,6 +1,6 @@
 # Ansible Jemalloc Role
 
-A role used to install _jemalloc_ from source.
+A role used to install _jemalloc_ from source and export `jemalloc_lib` variable
 
 ## Installation
 
@@ -24,15 +24,14 @@ git clone https://gitlab.com/crrlcx/ansible-jemalloc.git /etc/ansible/roles/ansi
   hosts: all
   roles:
     - role: ansible-jemalloc
-      vars:
-        version: 5.2.1
+      jemalloc_version: 5.2.1
 ```
 
 ## Role Variables
 
-| name      | description      | default |
-| --------- | ---------------- | ------- |
-| `version` | jemalloc version | `5.2.1` |
+| name               | description      | default |
+| ------------------ | ---------------- | ------- |
+| `jemalloc_version` | jemalloc version | `5.2.1` |
 
 ## Test
 

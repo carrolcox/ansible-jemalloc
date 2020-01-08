@@ -3,39 +3,19 @@
 - name: Check if jemalloc already exists
   stat:
     path: /usr/local/bin/jemalloc-config
-  register: jemalloc_config_bin_file
+  register: jemalloc_current_config_binary
+  changed_when: false
 
-- name: Set current_jemalloc_version to 0.0.0 if jemalloc doesn't exists
-  set_fact:
-    current_jemalloc_version: "0.0.0"
-  when:
-  - not jemalloc_config_bin_file.stat.exists
-
-- name: Get current jemalloc version
+- name: Get jemalloc current version
   shell: |
-    /usr/local/bin/jemalloc-config --version | sed "s/^\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/"
-  # `/usr/local/bin/jemalloc-config --version` returns 4.4.0-0-gf1f76357313e7dcad7262f17a48ff0a2e005fcdc
-  # The command returns a version string
-  # Example:  { "stdout": "4.4.0", ... }
-  register: jemalloc_system_version
+    set -o pipefail
+    sudo -Hu nobody timeout 2 /usr/local/bin/jemalloc-config --version 2>&1 | grep -Eoi '([0-9]{1,}\.){1,3}[0-9]{1,}' | sort -uV | head -1
+  args:
+    executable: /bin/bash
+  register: jemalloc_current_version
+  changed_when: false
   when:
-  - jemalloc_config_bin_file.stat.exists
-
-- name: Get current jemalloc enironment var
-  shell: |
-    echo `jemalloc-config --libdir`/libjemalloc.so.`jemalloc-config --revision`
-  register: jemalloc_env_var
-  when:
-  - jemalloc_config_bin_file.stat.exists
-
-- name: Set current_jemalloc_ facts
-  set_fact:
-    current_jemalloc_version: "{{ jemalloc_system_version.stdout | d('0.0.0') }}"
-    current_jemalloc_env_var: "{{ jemalloc_env_var.stdout | d('') }}"
-
-- name: View current jemalloc version and environment var
-  debug:
-    msg: "{{ current_jemalloc_version }}: {{ current_jemalloc_env_var }}"
+    - jemalloc_current_config_binary.stat.exists
 
 # Install jemalloc if it doesn't exist or the version doesn't match
 - block:
@@ -44,4 +24,19 @@
     - name: Compile and install jemalloc
       include: install.yml
   when:
-  - current_jemalloc_version is version_compare(version, '!=')
+    - not jemalloc_current_config_binary.stat.exists or jemalloc_current_version.stdout is version(jemalloc_version, '!=')
+
+- name: Get current jemalloc enironment var
+  shell: |
+    set -o pipefail
+    sudo -Hu nobody timeout 2 echo `/usr/local/bin/jemalloc-config --libdir`/libjemalloc.so.`/usr/local/bin/jemalloc-config --revision` 2>&1
+  args:
+    executable: /bin/bash
+  register: jemalloc_current_lib
+  changed_when: false
+
+- name: Export jemalloc_envvar fact
+  set_fact:
+    jemalloc_lib: "{{ jemalloc_current_lib.stdout }}"
+  when:
+    - jemalloc_current_lib.stdout != '/libjemalloc.so.'

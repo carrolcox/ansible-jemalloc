@@ -1,11 +1,10 @@
 ---
 # file: tasks/install-compile-tools.yml
 # Top-level installer tools required for compiling jemalloc sources.
-
 - name: Install Apt jemalloc packages required for compiling
   apt:
     name:
-      - "build-essential"
+      - 'build-essential'
     state: present
     force: yes
     update_cache: yes
@@ -18,11 +17,11 @@
 - name: Install Yum jemalloc packages required for compiling
   yum:
     name:
-      - "make"
-      - "automake"
-      - "gcc"
-      - "gcc-c++"
-      - "kernel-devel"
+      - 'make'
+      - 'automake'
+      - 'gcc'
+      - 'gcc-c++'
+      - 'kernel-devel'
     state: present
     force: yes
     update_cache: yes

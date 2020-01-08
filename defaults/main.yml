@@ -1,3 +1,4 @@
 ---
 
-version: 5.2.1
+jemalloc_version: '5.2.1'
+jemalloc_repo: 'https://github.com/jemalloc/jemalloc'
